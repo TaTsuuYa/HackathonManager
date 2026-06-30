@@ -1,4 +1,5 @@
 ﻿using HackathonManager.ws.Application.Constants;
+using HackathonManager.ws.Application.Hackathons.Serives;
 using HackathonManager.ws.Application.User.Services;
 using HackathonManager.ws.Domain.Entities;
 using HackathonManager.ws.Domain.IRepositories;
@@ -32,6 +33,7 @@ public static class ApplicationExtensions
     public static IServiceCollection AddServices(this IServiceCollection services)
     {
         services.AddScoped<IUserService, UserService>();
+        services.AddScoped<IHackathonService, HackathonService>();
 
         return services;
     }

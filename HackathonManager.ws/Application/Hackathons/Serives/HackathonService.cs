@@ -65,6 +65,13 @@ public class HackathonService(IGenericRepository<Hackathon, int> repo) : IHackat
 
     public async Task<Result<GetHackathonDto>> UpdateAsync(int id, UpdateHackathonDto newHackathon)
     {
+        if (newHackathon.EndDate < DateTime.UtcNow)
+            return Result<GetHackathonDto>.Fail("End date already passed", StatusCodes.Status400BadRequest);
+
+        bool isValid = IsValidDates(newHackathon.StartDate, newHackathon.EndDate);
+        if (!isValid)
+            return Result<GetHackathonDto>.Fail("Start date is greater than end date", StatusCodes.Status400BadRequest);
+
         Hackathon? hackathon = await _repository.GetByIdAsync(id);
         if (hackathon == null)
             return Result<GetHackathonDto>.Fail("Hackathon not found", StatusCodes.Status404NotFound);

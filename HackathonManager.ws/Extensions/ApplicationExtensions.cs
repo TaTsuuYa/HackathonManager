@@ -1,5 +1,6 @@
 ﻿using HackathonManager.ws.Application.Constants;
 using HackathonManager.ws.Application.Hackathons.Serives;
+using HackathonManager.ws.Application.Teams.Services;
 using HackathonManager.ws.Application.User.Services;
 using HackathonManager.ws.Domain.Entities;
 using HackathonManager.ws.Domain.IRepositories;
@@ -34,6 +35,7 @@ public static class ApplicationExtensions
     {
         services.AddScoped<IUserService, UserService>();
         services.AddScoped<IHackathonService, HackathonService>();
+        services.AddScoped<ITeamService, TeamService>();
 
         return services;
     }
@@ -47,7 +49,7 @@ public static class ApplicationExtensions
     public static IServiceCollection AddSqlDefaultServer(this IServiceCollection services, string connectionString)
     {
         services.AddDbContext<AppDbContext>(options =>
-            options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString))
+            options.UseSqlServer(connectionString)
         );
 
         return services;

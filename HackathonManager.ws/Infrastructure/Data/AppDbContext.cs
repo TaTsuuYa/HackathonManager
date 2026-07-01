@@ -38,5 +38,25 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : IdentityDbCo
                 NormalizedName = RoleNames.Participant.ToUpper(),
             }
         );
+
+        //// set team <-> user relationship
+        //builder.Entity<Team>()
+        //    .HasMany(t => t.Members)
+        //    .WithMany(u => u.Teams)
+        //    .UsingEntity(j => j.ToTable("AppUserTeam"));
+
+        //// Configure cascade delete behavior to avoid cycles
+        //builder.Entity<Team>()
+        //    .HasMany(t => t.Members)
+        //    .WithMany(u => u.Teams)
+        //    .UsingEntity(j => j
+        //        .HasOne(typeof(AppUser))
+        //        .WithMany()
+        //        .HasForeignKey("MembersId")
+        //        .OnDelete(DeleteBehavior.Cascade)
+        //        .HasOne(typeof(Team))
+        //        .WithMany()
+        //        .HasForeignKey("TeamsId")
+        //        .OnDelete(DeleteBehavior.NoAction));
     }
 }

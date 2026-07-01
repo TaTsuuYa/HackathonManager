@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace HackathonManager.ws.Domain.Entities;
@@ -16,6 +17,6 @@ public class Team
     [InverseProperty(nameof(AppUser.LeadedTeams))]
     public AppUser? Leader { get; set; }
 
-    [InverseProperty(nameof(AppUser.Teams))]
+    [DeleteBehavior(DeleteBehavior.NoAction)]
     public ICollection<AppUser> Members { get; set; } = [];
 }

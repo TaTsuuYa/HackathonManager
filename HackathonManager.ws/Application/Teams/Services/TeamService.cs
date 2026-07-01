@@ -12,9 +12,10 @@ public class TeamService(IGenericRepository<Team, int> teamRepo, IGenericReposit
     private readonly IGenericRepository<Team, int> _teamRepository = teamRepo;
     private readonly IGenericRepository<AppUser, int> _userRepository = userRepo;
 
+    private const string TeamNotFoundMessage = "Team not found";
+
     public async Task<Result<GetTeamDto>> CreateAsync(CreateTeamDto newTeam, int leaderId)
     {
-        // TODO: check if leader is a participant in controller
         AppUser? leader = await _userRepository.GetByIdAsync(leaderId);
         if (leader is null)
             return Result<GetTeamDto>.Fail("Leader not found", StatusCodes.Status404NotFound);
@@ -34,8 +35,15 @@ public class TeamService(IGenericRepository<Team, int> teamRepo, IGenericReposit
         return await GetByIdAsync(team.Id);
     }
 
-    public async Task<Result<bool>> DeleteAsync(int id)
+    public async Task<Result<bool>> DeleteAsync(int id, int userId)
     {
+        Team? team = await _teamRepository.GetByIdAsync(id);
+        if (team == null)
+            return Result<bool>.Fail("Team not found", StatusCodes.Status404NotFound);
+
+        if (team.LeaderId != userId)
+            return Result<bool>.Fail("Only the team leader can delete the team", StatusCodes.Status403Forbidden);
+
         bool isDeleted = await _teamRepository.DeleteAsync(id);
         if (!isDeleted)
             return Result<bool>.Fail("Failed to delete team", StatusCodes.Status400BadRequest);
@@ -58,7 +66,7 @@ public class TeamService(IGenericRepository<Team, int> teamRepo, IGenericReposit
     {
         Team? team = await _teamRepository.GetByIdAsync(id);
         if (team == null)
-            return Result<GetTeamDto>.Fail("Team not found", StatusCodes.Status404NotFound);
+            return Result<GetTeamDto>.Fail(TeamNotFoundMessage, StatusCodes.Status404NotFound);
 
         Team dbTeam = await _teamRepository.GetAll()
             .Include(t => t.Leader)
@@ -68,20 +76,27 @@ public class TeamService(IGenericRepository<Team, int> teamRepo, IGenericReposit
         return Result<GetTeamDto>.Ok(dbTeam.ToDto());
     }
 
-    public async Task<Result<GetTeamDto>> UpdateAsync(int id, UpdateTeamDto newTeam)
+    public async Task<Result<GetTeamDto>> UpdateAsync(int id, UpdateTeamDto newTeam, int userId)
     {
-        // TODO: check if leader is a participant in controller
         AppUser? leader = await _userRepository.GetByIdAsync(newTeam.LeaderId);
         if (leader is null)
             return Result<GetTeamDto>.Fail("Leader not found", StatusCodes.Status404NotFound);
 
-        Team? team = await _teamRepository.GetByIdAsync(id);
+        Team? team = await _teamRepository.GetAll()
+            .Include(t => t.Members)
+            .FirstOrDefaultAsync(t => t.Id == id);
+
         if (team == null)
-            return Result<GetTeamDto>.Fail("Team not found", StatusCodes.Status404NotFound);
+            return Result<GetTeamDto>.Fail(TeamNotFoundMessage, StatusCodes.Status404NotFound);
+
+        if (team.LeaderId != userId)
+            return Result<GetTeamDto>.Fail("Only the team leader can update the team", StatusCodes.Status403Forbidden);
+
+        if (!team.Members.Any(m => m.Id == newTeam.LeaderId))
+            return Result<GetTeamDto>.Fail("New leader must be a member of the team", StatusCodes.Status400BadRequest);
 
         team.Name = newTeam.Name;
         team.Description = newTeam.Description;
-        // TODO: Check if the new leader is already a member of the team
         team.LeaderId = newTeam.LeaderId;
 
         Team? updatedTeam = await _teamRepository.UpdateAsync(team);
@@ -93,7 +108,6 @@ public class TeamService(IGenericRepository<Team, int> teamRepo, IGenericReposit
 
     public async Task<Result<bool>> Join(int participantId, int teamId)
     {
-        // TODO: check if participant is a participant in controller
         AppUser? participant = await _userRepository.GetByIdAsync(participantId);
         if (participant is null)
             return Result<bool>.Fail("Participant not found", StatusCodes.Status404NotFound);
@@ -117,12 +131,11 @@ public class TeamService(IGenericRepository<Team, int> teamRepo, IGenericReposit
 
     public async Task<Result<bool>> Leave(int participantId, int teamId)
     {
-        // TODO: check if participant is a participant in controller
         Team? team = await _teamRepository.GetAll()
             .Include(t => t.Members)
             .FirstOrDefaultAsync(t => t.Id == teamId);
         if (team is null)
-            return Result<bool>.Fail("Team not found", StatusCodes.Status404NotFound);
+            return Result<bool>.Fail(TeamNotFoundMessage, StatusCodes.Status404NotFound);
 
         AppUser participant = team.Members.First(m => m.Id == participantId);
         if (participant.Id == team.LeaderId)

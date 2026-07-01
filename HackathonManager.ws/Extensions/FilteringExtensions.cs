@@ -40,6 +40,9 @@ public static class FilteringExtensions
                 EF.Functions.Like(t.Description, $"%{filter.Query}%"));
         }
 
+        if (filter.MemberId != null)
+            query = query.Where(t => t.Members.Any(m => m.Id == filter.MemberId));
+
         if (filter.LeaderId != null)
             query = query.Where(t => t.LeaderId == filter.LeaderId);
 

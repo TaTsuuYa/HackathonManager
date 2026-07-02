@@ -1,5 +1,6 @@
 ﻿using HackathonManager.ws.Application.Constants;
 using HackathonManager.ws.Application.Hackathons.Dtos;
+using HackathonManager.ws.Application.Submissions.Dtos;
 using HackathonManager.ws.Application.Teams.Dtos;
 using HackathonManager.ws.Domain.Entities;
 
@@ -30,5 +31,15 @@ public static class MappingExtensions
             DisplayName = m.DisplayName,
             Role = TeamMemberRoles.GetRole(hackathon.LeaderId, m.Id)
         })
+    };
+
+    public static GetSubmissionDto ToDto(this Submission submission) => new()
+    {
+        Id = submission.Id,
+        Title = submission.Title,
+        Description = submission.Description,
+        Url = submission.Url,
+        HackathonId = submission.HackathonId,
+        TeamId = submission.TeamId
     };
 }

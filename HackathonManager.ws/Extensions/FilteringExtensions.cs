@@ -1,5 +1,6 @@
 ﻿using HackathonManager.ws.Application.Constants;
 using HackathonManager.ws.Application.Hackathons.Dtos;
+using HackathonManager.ws.Application.Submissions.Dtos;
 using HackathonManager.ws.Application.Teams.Dtos;
 using HackathonManager.ws.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -45,6 +46,23 @@ public static class FilteringExtensions
 
         if (filter.LeaderId != null)
             query = query.Where(t => t.LeaderId == filter.LeaderId);
+
+        return query;
+    }
+
+    public static IQueryable<Submission> Filter(this IQueryable<Submission> query, FilterSubmissionDto filter)
+    {
+        if (filter.Query is not null)
+        {
+            query = query.Where(t => EF.Functions.Like(t.Title, $"%{filter.Query}%") ||
+                EF.Functions.Like(t.Description, $"%{filter.Query}%"));
+        }
+
+        if (filter.HackathonId != null)
+            query = query.Where(t => t.HackathonId == filter.HackathonId);
+
+        if (filter.TeamId != null)
+            query = query.Where(t => t.TeamId == filter.TeamId);
 
         return query;
     }

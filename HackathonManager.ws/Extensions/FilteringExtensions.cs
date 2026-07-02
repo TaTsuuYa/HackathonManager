@@ -1,4 +1,5 @@
 ﻿using HackathonManager.ws.Application.Constants;
+using HackathonManager.ws.Application.Evaluations.Dtos;
 using HackathonManager.ws.Application.Hackathons.Dtos;
 using HackathonManager.ws.Application.Submissions.Dtos;
 using HackathonManager.ws.Application.Teams.Dtos;
@@ -63,6 +64,22 @@ public static class FilteringExtensions
 
         if (filter.TeamId != null)
             query = query.Where(t => t.TeamId == filter.TeamId);
+
+        return query;
+    }
+
+    public static IQueryable<Evaluation> Filter(this IQueryable<Evaluation> query, FilterEvaluationDto filter)
+    {
+        if (filter.SubmissionId is not null)
+        {
+            query = query.Where(t => t.SubmissionId == filter.SubmissionId);
+        }
+
+        if (filter.HackathonId != null)
+            query = query.Include(e => e.Submission).Where(t => t.Submission!.HackathonId == filter.HackathonId);
+
+        if (filter.TeamId != null)
+            query = query.Include(e => e.Submission).Where(t => t.Submission!.TeamId == filter.TeamId);
 
         return query;
     }

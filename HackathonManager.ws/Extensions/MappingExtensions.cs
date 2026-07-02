@@ -1,4 +1,5 @@
 ﻿using HackathonManager.ws.Application.Constants;
+using HackathonManager.ws.Application.Evaluations.Dtos;
 using HackathonManager.ws.Application.Hackathons.Dtos;
 using HackathonManager.ws.Application.Submissions.Dtos;
 using HackathonManager.ws.Application.Teams.Dtos;
@@ -41,5 +42,21 @@ public static class MappingExtensions
         Url = submission.Url,
         HackathonId = submission.HackathonId,
         TeamId = submission.TeamId
+    };
+
+    public static GetEvaluationDto ToDto(this Evaluation submission) => new()
+    {
+        Id = submission.Id,
+        InnovationScore = submission.InnovationScore,
+        PresentationQualityScore = submission.PresentationQualityScore,
+        SolutionPertinenceScore = submission.SolutionPertinenceScore,
+        TechnicalQualityScore = submission.TechnicalQualityScore,
+        SubmissionId = submission.SubmissionId,
+        HackathonId = submission.Submission?.HackathonId ?? 0,
+        HackathonTheme = submission.Submission?.Hackathon?.Theme ?? "---",
+        MentorId = submission.MentorId,
+        MentorName = submission.Mentor?.DisplayName ?? "---",
+        TeamId = submission.Submission?.TeamId ?? 0,
+        TeamName = submission.Submission?.Team?.Name ?? "---",
     };
 }

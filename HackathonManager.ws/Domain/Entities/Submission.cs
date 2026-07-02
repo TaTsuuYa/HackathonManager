@@ -16,4 +16,6 @@ public class Submission
 
     public required int HackathonId { get; set; }
     public Hackathon? Hackathon { get; set; }
+
+    public ICollection<Evaluation> Evaluations { get; set; } = [];
 }

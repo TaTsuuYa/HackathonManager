@@ -1,4 +1,5 @@
 ﻿using HackathonManager.ws.Application.Constants;
+using HackathonManager.ws.Application.Evaluations.Services;
 using HackathonManager.ws.Application.Hackathons.Serives;
 using HackathonManager.ws.Application.Submissions.Services;
 using HackathonManager.ws.Application.Teams.Services;
@@ -38,6 +39,7 @@ public static class ApplicationExtensions
         services.AddScoped<IHackathonService, HackathonService>();
         services.AddScoped<ITeamService, TeamService>();
         services.AddScoped<ISubmissionService, SubmissionService>();
+        services.AddScoped<IEvaluationService, EvaluationService>();
 
         return services;
     }

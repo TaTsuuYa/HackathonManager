@@ -1,11 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System.ComponentModel.DataAnnotations;
+﻿namespace HackathonManager.ws.Application.Evaluations.Dtos;
 
-namespace HackathonManager.ws.Domain.Entities;
-
-public class Evaluation
+public class GetEvaluationDto
 {
-    [Key]
     public int Id { get; set; }
 
     public float InnovationScore { get; set; }
@@ -14,9 +10,13 @@ public class Evaluation
     public float SolutionPertinenceScore { get; set; }
 
     public required int SubmissionId { get; set; }
-    public Submission? Submission { get; set; }
+
+    public required int TeamId { get; set; }
+    public required string TeamName { get; set; }
+
+    public required int HackathonId { get; set; }
+    public required string HackathonTheme { get; set; }
 
     public required int MentorId { get; set; }
-    [DeleteBehavior(DeleteBehavior.NoAction)]
-    public AppUser? Mentor { get; set; }
+    public required string MentorName { get; set; }
 }

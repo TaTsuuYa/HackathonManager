@@ -1,0 +1,54 @@
+@baseUrl = http://localhost:5042
+@token = 
+
+### Get all hackathons
+GET {{baseUrl}}/api/hackathons
+Accept: application/json
+
+###
+
+### Get hackathon by ID
+GET {{baseUrl}}/api/hackathons/1
+Accept: application/json
+
+###
+
+### Create a new hackathon (Admin only)
+POST {{baseUrl}}/api/hackathons
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "name": "Spring Hackathon 2025",
+  "description": "A 24-hour coding competition for innovative solutions",
+  "startDate": "2025-03-15T09:00:00Z",
+  "endDate": "2025-03-16T09:00:00Z",
+  "location": "Tech Hub Downtown",
+  "maxParticipants": 100,
+  "status": "Planning"
+}
+
+###
+
+### Update hackathon (Admin only)
+PUT {{baseUrl}}/api/hackathons/1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "name": "Spring Hackathon 2025 - Updated",
+  "description": "A 24-hour coding competition for innovative solutions",
+  "startDate": "2025-03-15T09:00:00Z",
+  "endDate": "2025-03-16T09:00:00Z",
+  "location": "Tech Hub Downtown",
+  "maxParticipants": 120,
+  "status": "Active"
+}
+
+###
+
+### Delete hackathon (Admin only)
+DELETE {{baseUrl}}/api/hackathons/1
+Authorization: Bearer {{token}}
+
+###

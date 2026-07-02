@@ -1,0 +1,12 @@
+@baseUrl = http://localhost:5042
+@contentType = application/json
+
+# JWT Token variable (update after login)
+@token = 
+
+# Sample IDs (update with real values)
+@hackathonId = 1
+@teamId = 1
+@userId = 1
+@submissionId = 1
+@evaluationId = 1

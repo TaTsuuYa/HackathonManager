@@ -1,0 +1,48 @@
+@baseUrl = http://localhost:5042
+@token = 
+
+### Get all evaluations
+GET {{baseUrl}}/api/evaluations
+Accept: application/json
+Authorization: Bearer {{token}}
+
+###
+
+### Get evaluation by ID
+GET {{baseUrl}}/api/evaluations/1
+Accept: application/json
+Authorization: Bearer {{token}}
+
+###
+
+### Create a new evaluation (Mentor only)
+POST {{baseUrl}}/api/evaluations
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "submissionId": 1,
+  "score": 85,
+  "feedback": "Excellent implementation with great UI/UX. Could improve documentation.",
+  "criteria": "Innovation, Code Quality, User Experience"
+}
+
+###
+
+### Update evaluation (Mentor only)
+PUT {{baseUrl}}/api/evaluations/1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "score": 90,
+  "feedback": "After re-review: Excellent implementation with great UI/UX and comprehensive documentation."
+}
+
+###
+
+### Delete evaluation (Mentor only)
+DELETE {{baseUrl}}/api/evaluations/1
+Authorization: Bearer {{token}}
+
+###

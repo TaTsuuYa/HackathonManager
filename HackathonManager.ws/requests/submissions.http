@@ -1,0 +1,52 @@
+@baseUrl = http://localhost:5042
+@token = 
+
+### Get all submissions
+GET {{baseUrl}}/api/submissions
+Accept: application/json
+Authorization: Bearer {{token}}
+
+###
+
+### Get submission by ID
+GET {{baseUrl}}/api/submissions/1
+Accept: application/json
+Authorization: Bearer {{token}}
+
+###
+
+### Create a new submission (Participant only)
+POST {{baseUrl}}/api/submissions
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "title": "AI-Powered Task Manager",
+  "description": "An intelligent task management application using machine learning",
+  "repositoryUrl": "https://github.com/innovators/ai-task-manager",
+  "demoUrl": "https://ai-task-manager-demo.herokuapp.com",
+  "teamId": 1,
+  "hackathonId": 1
+}
+
+###
+
+### Update submission (Participant only)
+PUT {{baseUrl}}/api/submissions/1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "title": "AI-Powered Task Manager - Enhanced",
+  "description": "An intelligent task management application using machine learning with advanced features",
+  "repositoryUrl": "https://github.com/innovators/ai-task-manager",
+  "demoUrl": "https://ai-task-manager-demo.herokuapp.com"
+}
+
+###
+
+### Delete submission (Participant only)
+DELETE {{baseUrl}}/api/submissions/1
+Authorization: Bearer {{token}}
+
+###

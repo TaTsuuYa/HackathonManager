@@ -1,0 +1,68 @@
+@baseUrl = http://localhost:5042
+@token = 
+
+### Get all teams
+GET {{baseUrl}}/api/teams
+Accept: application/json
+
+###
+
+### Get team by ID
+GET {{baseUrl}}/api/teams/1
+Accept: application/json
+
+###
+
+### Create a new team (Participant only)
+POST {{baseUrl}}/api/teams
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "name": "Innovators Team",
+  "hackathonId": 1
+}
+
+###
+
+### Update team (Participant only)
+PUT {{baseUrl}}/api/teams/1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "name": "Innovators Team - Updated"
+}
+
+###
+
+### Add team member (Participant only)
+POST {{baseUrl}}/api/teams/1/members
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "userId": 2,
+  "role": "Developer"
+}
+
+###
+
+### Remove team member (Participant only)
+DELETE {{baseUrl}}/api/teams/1/members/2
+Authorization: Bearer {{token}}
+
+###
+
+### Get team members
+GET {{baseUrl}}/api/teams/1/members
+Accept: application/json
+Authorization: Bearer {{token}}
+
+###
+
+### Delete team (Participant only)
+DELETE {{baseUrl}}/api/teams/1
+Authorization: Bearer {{token}}
+
+###

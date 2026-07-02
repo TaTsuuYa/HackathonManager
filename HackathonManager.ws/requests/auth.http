@@ -1,0 +1,27 @@
+@baseUrl = http://localhost:5042
+
+### Register a new user
+POST {{baseUrl}}/api/auth/register?username=testuser&displayName=Test%20User&password=Password123!
+Accept: application/json
+
+###
+
+### Get authentication token
+POST {{baseUrl}}/api/auth/token
+Content-Type: application/x-www-form-urlencoded
+
+username=testuser&password=Password123!
+
+###
+
+### Change password (requires authentication)
+PUT {{baseUrl}}/api/auth/password
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "currentPassword": "Password123!",
+  "newPassword": "NewPassword123!"
+}
+
+###

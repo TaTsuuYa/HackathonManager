@@ -4,7 +4,6 @@ using HackathonManager.ws.Application.User.Dtos;
 using HackathonManager.ws.Application.User.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.ComponentModel.DataAnnotations;
 
 namespace HackathonManager.ws.Controllers;
 
@@ -17,9 +16,9 @@ public class AuthController(IUserService service) : ApplicationController
     [HttpPost("token")]
     [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-    public async Task<IActionResult> GetToken([Required] string username, [Required] string password)
+    public async Task<IActionResult> GetToken([FromBody] LoginDto dto)
     {
-        Result<string> userResult = await _service.GetToken(username, password);
+        Result<string> userResult = await _service.GetToken(dto.Username, dto.Password);
         if (!userResult.Success)
             return StatusCode(userResult.StatusCode, userResult.Error);
 
@@ -29,13 +28,13 @@ public class AuthController(IUserService service) : ApplicationController
     [HttpPost("register")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> Register([Required] string username, [Required] string displayName, [Required] string password)
+    public async Task<IActionResult> Register([FromBody] RegisterDto dto)
     {
         Result<GetUserDto> userResult = await _service.CreateUserAsync(new AddUserDto
         {
-            Username = username,
-            DisplayName = displayName,
-            Password = password,
+            Username = dto.Username,
+            DisplayName = dto.DisplayName,
+            Password = dto.Password,
             Role = RoleNames.Participant
         });
 

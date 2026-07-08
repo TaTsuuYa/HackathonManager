@@ -8,6 +8,9 @@ builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
+// Add CORS
+builder.Services.AddAppliactionCors();
+
 // Add app services
 string connectionString = builder.Configuration["ConnectionString:DefaultConnection"]
     ?? throw new InvalidOperationException("Connection string 'DefaultConnection' is not found.");
@@ -30,6 +33,8 @@ app.UseSwaggerUI();
 app.UseAppMiddlewares();
 
 app.UseHttpsRedirection();
+
+app.UseApplicationCors();
 
 app.UseAuthentication();
 app.UseAuthorization();

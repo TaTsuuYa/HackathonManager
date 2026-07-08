@@ -100,6 +100,23 @@ public static class ApplicationExtensions
         }
     }
 
+    public static IServiceCollection AddAppliactionCors(this IServiceCollection services)
+    {
+        services.AddCors(options =>
+            options.AddPolicy("AllowAll", policy =>
+                policy.AllowAnyOrigin()
+                    .AllowAnyMethod()
+                    .AllowAnyHeader()));
+
+        return services;
+    }
+
+    public static IApplicationBuilder UseApplicationCors(this IApplicationBuilder app)
+    {
+        app.UseCors("AllowAll");
+        return app;
+    }
+
     public static IServiceCollection AddSwaggerWithAuthentication(this IServiceCollection Services)
     {
         Services.AddSwaggerGen(options =>

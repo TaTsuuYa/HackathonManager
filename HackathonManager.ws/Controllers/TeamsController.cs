@@ -106,4 +106,18 @@ public class TeamsController(ITeamService service) : ApplicationController
 
         return NoContent();
     }
+
+    [HttpDelete("{teamId:int}/members/{memberId:int}")]
+    [Authorize(Roles = RoleNames.Participant)]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> Leave(int teamId, int memberId)
+    {
+        Result<bool> result = await _service.Leave(memberId, teamId);
+        if (!result.Success)
+            return StatusCode(result.StatusCode, result.Error);
+
+        return NoContent();
+    }
 }

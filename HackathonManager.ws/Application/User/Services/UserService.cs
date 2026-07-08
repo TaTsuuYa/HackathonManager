@@ -1,4 +1,5 @@
-﻿using HackathonManager.ws.Application.Result;
+﻿using HackathonManager.ws.Application.Constants;
+using HackathonManager.ws.Application.Result;
 using HackathonManager.ws.Application.User.Dtos;
 using HackathonManager.ws.Domain.Entities;
 using HackathonManager.ws.Domain.IRepositories;
@@ -156,7 +157,8 @@ public class UserService(IUserRepository userRepository, IOptions<JwtOptions> Jw
         Claim[] claims = [
             new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
             new Claim(ClaimTypes.Name, user.UserName),
-            new Claim(ClaimTypes.Role, user.Role)
+            new Claim(ClaimTypes.Role, user.Role),
+            new Claim(ApplicationClaimTypes.DisplayName, user.DisplayName)
         ];
 
         SecurityTokenDescriptor tokenDescriptor = new()

@@ -1,4 +1,5 @@
-﻿using HackathonManager.ws.Application.Result;
+﻿using HackathonManager.ws.Application.Pagination;
+using HackathonManager.ws.Application.Result;
 using HackathonManager.ws.Application.Submissions.Dtos;
 using HackathonManager.ws.Domain.Entities;
 using HackathonManager.ws.Domain.IRepositories;
@@ -89,13 +90,13 @@ public class SubmissionService(IGenericRepository<Submission, int> repo,
         return Result<bool>.Ok(true);
     }
 
-    public async Task<List<GetSubmissionDto>> GetAllAsync(FilterSubmissionDto filter)
+    public async Task<PaginatedDto<GetSubmissionDto>> GetAllAsync(FilterSubmissionDto filter)
     {
-        IEnumerable<Submission> query = await _repository.GetAll()
+        PaginatedDto<Submission> query = await _repository.GetAll()
             .Filter(filter)
-            .ToListAsync();
+            .PaginateAsync(filter);
 
-        return [.. query.Select(h => h.ToDto())];
+        return query.RePaginate(s => s.ToDto());
     }
 
     private async Task<Hackathon?> GetHackathon(int hackathonId)

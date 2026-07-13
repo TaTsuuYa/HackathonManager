@@ -1,9 +1,9 @@
 ﻿using HackathonManager.ws.Application.Hackathons.Dtos;
+using HackathonManager.ws.Application.Pagination;
 using HackathonManager.ws.Application.Result;
 using HackathonManager.ws.Domain.Entities;
 using HackathonManager.ws.Domain.IRepositories;
 using HackathonManager.ws.Extensions;
-using Microsoft.EntityFrameworkCore;
 
 namespace HackathonManager.ws.Application.Hackathons.Serives;
 
@@ -54,13 +54,14 @@ public class HackathonService(IGenericRepository<Hackathon, int> repo) : IHackat
         return Result<bool>.Ok(true);
     }
 
-    public async Task<List<GetHackathonDto>> GetAllAsync(FilterHackathonDto filter)
+    public async Task<PaginatedDto<GetHackathonDto>> GetAllAsync(FilterHackathonDto filter)
     {
-        IEnumerable<Hackathon> query = await _repository.GetAll()
+        PaginatedDto<Hackathon> query = await _repository.GetAll()
+            .OrderBy(h => h.EndDate)
             .Filter(filter)
-            .ToListAsync();
+            .PaginateAsync(filter);
 
-        return [.. query.Select(h => h.ToDto())];
+        return query.RePaginate(h => h.ToDto());
     }
 
     public async Task<Result<GetHackathonDto>> UpdateAsync(int id, UpdateHackathonDto newHackathon)

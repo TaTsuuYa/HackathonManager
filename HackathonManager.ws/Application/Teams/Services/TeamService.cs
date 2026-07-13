@@ -1,4 +1,5 @@
-﻿using HackathonManager.ws.Application.Result;
+﻿using HackathonManager.ws.Application.Pagination;
+using HackathonManager.ws.Application.Result;
 using HackathonManager.ws.Application.Teams.Dtos;
 using HackathonManager.ws.Domain.Entities;
 using HackathonManager.ws.Domain.IRepositories;
@@ -51,15 +52,15 @@ public class TeamService(IGenericRepository<Team, int> teamRepo, IGenericReposit
         return Result<bool>.Ok(true);
     }
 
-    public async Task<List<GetTeamDto>> GetAllAsync(FilterTeamDto filter)
+    public async Task<PaginatedDto<GetTeamDto>> GetAllAsync(FilterTeamDto filter)
     {
-        IEnumerable<Team> query = await _teamRepository.GetAll()
+        PaginatedDto<Team> query = await _teamRepository.GetAll()
             .Include(t => t.Leader)
             .Include(t => t.Members)
             .Filter(filter)
-            .ToListAsync();
+            .PaginateAsync(filter);
 
-        return [.. query.Select(t => t.ToDto())];
+        return query.RePaginate(t => t.ToDto());
     }
 
     public async Task<Result<GetTeamDto>> GetByIdAsync(int id)

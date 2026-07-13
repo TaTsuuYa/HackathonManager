@@ -1,6 +1,7 @@
 ﻿using HackathonManager.ws.Application.Constants;
 using HackathonManager.ws.Application.Hackathons.Dtos;
 using HackathonManager.ws.Application.Hackathons.Serives;
+using HackathonManager.ws.Application.Pagination;
 using HackathonManager.ws.Application.Result;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -26,10 +27,10 @@ public class HackathonsController(IHackathonService serice) : ApplicationControl
     }
 
     [HttpGet]
-    [ProducesResponseType(typeof(List<GetHackathonDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(PaginatedDto<GetHackathonDto>), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetAll([FromQuery] FilterHackathonDto filter)
     {
-        List<GetHackathonDto> hackathons = await _service.GetAllAsync(filter);
+        PaginatedDto<GetHackathonDto> hackathons = await _service.GetAllAsync(filter);
         return Ok(hackathons);
     }
 

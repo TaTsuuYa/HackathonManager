@@ -1,4 +1,5 @@
 ﻿using HackathonManager.ws.Application.Evaluations.Dtos;
+using HackathonManager.ws.Application.Pagination;
 using HackathonManager.ws.Application.Result;
 using HackathonManager.ws.Domain.Entities;
 using HackathonManager.ws.Domain.IRepositories;
@@ -79,17 +80,18 @@ public class EvaluationService(IGenericRepository<Evaluation, int> repo,
         return Result<bool>.Ok(true);
     }
 
-    public async Task<List<GetEvaluationDto>> GetAllAsync(FilterEvaluationDto filter)
+    public async Task<PaginatedDto<GetEvaluationDto>> GetAllAsync(FilterEvaluationDto filter)
     {
-        IEnumerable<Evaluation> query = await _repository.GetAll()
+        PaginatedDto<Evaluation> query = await _repository.GetAll()
             .Include(e => e.Mentor)
             .Include(e => e.Submission)
                 .ThenInclude(s => s!.Hackathon)
             .Include(e => e.Submission)
                 .ThenInclude(s => s!.Team)
+            .OrderBy(e => e.Submission!.Hackathon!.EndDate)
             .Filter(filter)
-            .ToListAsync();
+            .PaginateAsync(filter);
 
-        return [.. query.Select(h => h.ToDto())];
+        return query.RePaginate(e => e.ToDto());
     }
 }

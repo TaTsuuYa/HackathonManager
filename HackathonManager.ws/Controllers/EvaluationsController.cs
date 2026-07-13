@@ -1,6 +1,7 @@
 ﻿using HackathonManager.ws.Application.Constants;
 using HackathonManager.ws.Application.Evaluations.Dtos;
 using HackathonManager.ws.Application.Evaluations.Services;
+using HackathonManager.ws.Application.Pagination;
 using HackathonManager.ws.Application.Result;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -27,10 +28,10 @@ public class EvaluationsController(IEvaluationService serice) : ApplicationContr
     }
 
     [HttpGet]
-    [ProducesResponseType(typeof(List<GetEvaluationDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(PaginatedDto<GetEvaluationDto>), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetAll([FromQuery] FilterEvaluationDto filter)
     {
-        List<GetEvaluationDto> evaluations = await _service.GetAllAsync(filter);
+        PaginatedDto<GetEvaluationDto> evaluations = await _service.GetAllAsync(filter);
         return Ok(evaluations);
     }
 

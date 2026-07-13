@@ -3,7 +3,9 @@ using HackathonManager.ws.Application.Evaluations.Dtos;
 using HackathonManager.ws.Application.Hackathons.Dtos;
 using HackathonManager.ws.Application.Submissions.Dtos;
 using HackathonManager.ws.Application.Teams.Dtos;
+using HackathonManager.ws.Application.User.Dtos;
 using HackathonManager.ws.Domain.Entities;
+using HackathonManager.ws.Domain.IRepositories;
 
 namespace HackathonManager.ws.Extensions;
 
@@ -58,5 +60,13 @@ public static class MappingExtensions
         MentorName = submission.Mentor?.DisplayName ?? "---",
         TeamId = submission.Submission?.TeamId ?? 0,
         TeamName = submission.Submission?.Team?.Name ?? "---",
+    };
+
+    public static async Task<GetUserDto> ToDtoAsync(this AppUser u, IUserRepository userRepository) => new()
+    {
+        Id = u.Id,
+        DisplayName = u.DisplayName,
+        UserName = u.UserName!,
+        Role = (await userRepository.GetRoleAsync(u))!,
     };
 }

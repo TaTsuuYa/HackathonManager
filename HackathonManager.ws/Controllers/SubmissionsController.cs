@@ -1,4 +1,5 @@
 ﻿using HackathonManager.ws.Application.Constants;
+using HackathonManager.ws.Application.Pagination;
 using HackathonManager.ws.Application.Result;
 using HackathonManager.ws.Application.Submissions.Dtos;
 using HackathonManager.ws.Application.Submissions.Services;
@@ -27,10 +28,10 @@ public class SubmissionsController(ISubmissionService serice) : ApplicationContr
     }
 
     [HttpGet]
-    [ProducesResponseType(typeof(List<GetSubmissionDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(PaginatedDto<GetSubmissionDto>), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetAll([FromQuery] FilterSubmissionDto filter)
     {
-        List<GetSubmissionDto> submissions = await _service.GetAllAsync(filter);
+        PaginatedDto<GetSubmissionDto> submissions = await _service.GetAllAsync(filter);
         return Ok(submissions);
     }
 

@@ -1,4 +1,5 @@
 ﻿using HackathonManager.ws.Application.Constants;
+using HackathonManager.ws.Application.Pagination;
 using HackathonManager.ws.Application.Result;
 using HackathonManager.ws.Application.User.Dtos;
 using HackathonManager.ws.Application.User.Services;
@@ -16,10 +17,10 @@ public class UsersController(IUserService userService) : ControllerBase
     private readonly IUserService _service = userService;
 
     [HttpGet]
-    [ProducesResponseType(typeof(List<GetUserDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(PaginatedDto<GetUserDto>), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetAll([FromQuery] FilterUserDto filter)
     {
-        List<GetUserDto> users = await _service.GetAll(filter);
+        PaginatedDto<GetUserDto> users = await _service.GetAllAsync(filter);
         return Ok(users);
     }
 

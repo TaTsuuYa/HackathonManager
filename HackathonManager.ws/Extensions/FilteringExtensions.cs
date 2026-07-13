@@ -3,6 +3,7 @@ using HackathonManager.ws.Application.Evaluations.Dtos;
 using HackathonManager.ws.Application.Hackathons.Dtos;
 using HackathonManager.ws.Application.Submissions.Dtos;
 using HackathonManager.ws.Application.Teams.Dtos;
+using HackathonManager.ws.Application.User.Dtos;
 using HackathonManager.ws.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -80,6 +81,18 @@ public static class FilteringExtensions
 
         if (filter.TeamId != null)
             query = query.Include(e => e.Submission).Where(t => t.Submission!.TeamId == filter.TeamId);
+
+        return query;
+    }
+
+    public static IQueryable<AppUser> Filter(this IQueryable<AppUser> query, FilterUserDto filter)
+    {
+        if (filter.Name != null)
+        {
+            query = query.Where(u =>
+                EF.Functions.Like(u.UserName!, $"%{filter.Name}%") ||
+                EF.Functions.Like(u.DisplayName!, $"%{filter.Name}%"));
+        }
 
         return query;
     }

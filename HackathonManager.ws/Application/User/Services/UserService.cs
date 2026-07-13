@@ -1,8 +1,10 @@
 ﻿using HackathonManager.ws.Application.Constants;
+using HackathonManager.ws.Application.Pagination;
 using HackathonManager.ws.Application.Result;
 using HackathonManager.ws.Application.User.Dtos;
 using HackathonManager.ws.Domain.Entities;
 using HackathonManager.ws.Domain.IRepositories;
+using HackathonManager.ws.Extensions;
 using HackathonManager.ws.Options.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -61,27 +63,14 @@ public class UserService(IUserRepository userRepository, IOptions<JwtOptions> Jw
         return await GetUserByIdAsync(createdUser.Id);
     }
 
-    public async Task<List<GetUserDto>> GetAll(FilterUserDto filter)
+    public async Task<PaginatedDto<GetUserDto>> GetAllAsync(FilterUserDto filter)
     {
-        List<AppUser> users = await _userRepository.GetAll().ToListAsync();
-        List<GetUserDto> mappedUsers = [.. users.Select(u => new GetUserDto()
-        {
-            Id = u.Id,
-            DisplayName = u.DisplayName,
-            UserName = u.UserName!,
-            Role = _userRepository.GetRoleAsync(u).Result!,
-        })];
+        PaginatedDto<AppUser> query = await _userRepository.GetAll()
+            .OrderBy(u => u.UserName)
+            .Filter(filter)
+            .PaginateAsync(filter);
 
-        if (filter.Name != null)
-        {
-            mappedUsers = [.. mappedUsers.Where(u => u.UserName!.Contains(filter.Name, StringComparison.InvariantCultureIgnoreCase) ||
-                u.DisplayName!.Contains(filter.Name, StringComparison.InvariantCultureIgnoreCase))];
-        }
-
-        if (filter.Role != null)
-            mappedUsers = [.. mappedUsers.Where(u => u.Role.Equals(filter.Role, StringComparison.InvariantCultureIgnoreCase))];
-
-        return mappedUsers;
+        return await query.RePaginateAsync(u => u.ToDtoAsync(_userRepository));
     }
 
     public async Task<Result<GetUserDto>> UpdatePasswordByIdAsync(int id, string newPassword)

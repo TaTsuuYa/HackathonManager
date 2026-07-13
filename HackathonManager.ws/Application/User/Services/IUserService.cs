@@ -1,4 +1,5 @@
-﻿using HackathonManager.ws.Application.Result;
+﻿using HackathonManager.ws.Application.Pagination;
+using HackathonManager.ws.Application.Result;
 using HackathonManager.ws.Application.User.Dtos;
 
 namespace HackathonManager.ws.Application.User.Services;
@@ -6,7 +7,7 @@ namespace HackathonManager.ws.Application.User.Services;
 public interface IUserService
 {
     Task<Result<GetUserDto>> GetUserByIdAsync(int id);
-    Task<List<GetUserDto>> GetAll(FilterUserDto filter);
+    Task<PaginatedDto<GetUserDto>> GetAllAsync(FilterUserDto filter);
     Task<Result<GetUserDto>> UpdateUserAsync(int id, UpdateUserDto userDto);
     Task<Result<GetUserDto>> CreateUserAsync(AddUserDto userDto);
     Task<Result<bool>> DeleteUserAsync(int id);

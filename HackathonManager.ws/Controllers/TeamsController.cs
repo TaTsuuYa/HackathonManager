@@ -1,4 +1,5 @@
 ﻿using HackathonManager.ws.Application.Constants;
+using HackathonManager.ws.Application.Pagination;
 using HackathonManager.ws.Application.Result;
 using HackathonManager.ws.Application.Teams.Dtos;
 using HackathonManager.ws.Application.Teams.Services;
@@ -26,10 +27,10 @@ public class TeamsController(ITeamService service) : ApplicationController
     }
 
     [HttpGet]
-    [ProducesResponseType(typeof(List<GetTeamDto>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(PaginatedDto<GetTeamDto>), StatusCodes.Status200OK)]
     public async Task<IActionResult> GetAll([FromQuery] FilterTeamDto filter)
     {
-        List<GetTeamDto> hackathons = await _service.GetAllAsync(filter);
+        PaginatedDto<GetTeamDto> hackathons = await _service.GetAllAsync(filter);
         return Ok(hackathons);
     }
 

@@ -1,11 +1,12 @@
-﻿using HackathonManager.ws.Application.Result;
+﻿using HackathonManager.ws.Application.Pagination;
+using HackathonManager.ws.Application.Result;
 using HackathonManager.ws.Application.Teams.Dtos;
 
 namespace HackathonManager.ws.Application.Teams.Services;
 
 public interface ITeamService
 {
-    Task<List<GetTeamDto>> GetAllAsync(FilterTeamDto filter);
+    Task<PaginatedDto<GetTeamDto>> GetAllAsync(FilterTeamDto filter);
     Task<Result<GetTeamDto>> GetByIdAsync(int id);
     Task<Result<bool>> DeleteAsync(int id, int userId);
     Task<Result<GetTeamDto>> UpdateAsync(int id, UpdateTeamDto newTeam, int userId);

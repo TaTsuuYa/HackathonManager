@@ -67,7 +67,7 @@ public class UserService(IUserRepository userRepository, IOptions<JwtOptions> Jw
     {
         PaginatedDto<AppUser> query = await _userRepository.GetAll()
             .OrderBy(u => u.UserName)
-            .Filter(filter)
+            .Filter(_userRepository.Roles, _userRepository.UserRoles, filter)
             .PaginateAsync(filter);
 
         return await query.RePaginateAsync(u => u.ToDtoAsync(_userRepository));

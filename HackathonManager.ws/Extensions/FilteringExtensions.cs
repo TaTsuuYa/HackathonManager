@@ -5,6 +5,7 @@ using HackathonManager.ws.Application.Submissions.Dtos;
 using HackathonManager.ws.Application.Teams.Dtos;
 using HackathonManager.ws.Application.User.Dtos;
 using HackathonManager.ws.Domain.Entities;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace HackathonManager.ws.Extensions;
@@ -85,13 +86,23 @@ public static class FilteringExtensions
         return query;
     }
 
-    public static IQueryable<AppUser> Filter(this IQueryable<AppUser> query, FilterUserDto filter)
+    public static IQueryable<AppUser> Filter(this IQueryable<AppUser> query, DbSet<IdentityRole<int>> roles, DbSet<IdentityUserRole<int>> userRoles, FilterUserDto filter)
     {
         if (filter.Name != null)
         {
             query = query.Where(u =>
                 EF.Functions.Like(u.UserName!, $"%{filter.Name}%") ||
                 EF.Functions.Like(u.DisplayName!, $"%{filter.Name}%"));
+        }
+
+        if (filter.Role != null)
+        {
+            // Add role filtering
+            query = query.Where(u =>
+            userRoles
+                .Where(ur => ur.UserId == u.Id)
+                .Join(roles, ur => ur.RoleId, r => r.Id, (ur, r) => r.Name)
+                .Contains(filter.Role));
         }
 
         return query;

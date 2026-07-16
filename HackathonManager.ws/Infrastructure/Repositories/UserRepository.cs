@@ -16,6 +16,9 @@ public class UserRepository(AppDbContext context,
     private readonly UserManager<AppUser> _userManager = userManager;
     private readonly RoleManager<IdentityRole<int>> _roleManager = roleManager;
 
+    public DbSet<IdentityRole<int>> Roles => _context.Roles;
+    public DbSet<IdentityUserRole<int>> UserRoles => _context.UserRoles;
+
     public async Task<AppUser?> GetByIdAsync(int id) => await _userManager.FindByIdAsync(id.ToString());
 
     public IQueryable<AppUser> GetAll() => _userManager.Users;

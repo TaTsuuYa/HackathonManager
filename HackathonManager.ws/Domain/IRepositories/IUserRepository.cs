@@ -1,4 +1,6 @@
 ﻿using HackathonManager.ws.Domain.Entities;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace HackathonManager.ws.Domain.IRepositories;
 
@@ -12,4 +14,7 @@ public interface IUserRepository
     Task<bool> DeleteUserAsync(AppUser user);
     Task<AppUser?> UpdatePasswordAsync(int id, string newPassword);
     Task<bool?> VerifyPasswordAsync(string username, string password);
+
+    DbSet<IdentityRole<int>> Roles { get; }
+    DbSet<IdentityUserRole<int>> UserRoles { get; }
 }

@@ -13,4 +13,5 @@ public interface ITeamService
     Task<Result<GetTeamDto>> CreateAsync(CreateTeamDto newTeam, int leaderId);
     Task<Result<bool>> Join(int participantId, int teamId);
     Task<Result<bool>> Leave(int participantId, int teamId);
+    Task<Result<bool>> Kick(int participantId, int teamId, int userId);
 }

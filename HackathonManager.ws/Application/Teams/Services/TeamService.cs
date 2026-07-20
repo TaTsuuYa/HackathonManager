@@ -138,12 +138,12 @@ public class TeamService(IGenericRepository<Team, int> teamRepo, IGenericReposit
         if (team is null)
             return Result<bool>.Fail(TeamNotFoundMessage, StatusCodes.Status404NotFound);
 
+        if (!team.Members.Any(m => m.Id == participantId))
+            return Result<bool>.Fail("Participant is not a member of the team", StatusCodes.Status400BadRequest);
+
         AppUser participant = team.Members.First(m => m.Id == participantId);
         if (participant.Id == team.LeaderId)
             return Result<bool>.Fail("Leader cannot leave the team", StatusCodes.Status400BadRequest);
-
-        if (!team.Members.Any(m => m.Id == participantId))
-            return Result<bool>.Fail("Participant is not a member of the team", StatusCodes.Status400BadRequest);
 
         team.Members.Remove(participant);
         Team? updatedTeam = await _teamRepository.UpdateAsync(team);
@@ -151,5 +151,17 @@ public class TeamService(IGenericRepository<Team, int> teamRepo, IGenericReposit
             return Result<bool>.Fail("Failed to update team", StatusCodes.Status400BadRequest);
 
         return Result<bool>.Ok(true);
+    }
+
+    public async Task<Result<bool>> Kick(int participantId, int teamId, int userId)
+    {
+        Team? team = await _teamRepository.GetByIdAsync(teamId);
+        if (team is null)
+            return Result<bool>.Fail(TeamNotFoundMessage, StatusCodes.Status404NotFound);
+
+        if (team.LeaderId != userId)
+            return Result<bool>.Fail("Only the team leader can kick a member", StatusCodes.Status403Forbidden);
+
+        return await Leave(participantId, teamId);
     }
 }

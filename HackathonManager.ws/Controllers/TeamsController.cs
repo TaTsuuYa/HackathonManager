@@ -113,9 +113,10 @@ public class TeamsController(ITeamService service) : ApplicationController
     [ProducesResponseType(StatusCodes.Status204NoContent)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> Leave(int teamId, int memberId)
+    public async Task<IActionResult> Kick(int teamId, int memberId)
     {
-        Result<bool> result = await _service.Leave(memberId, teamId);
+        int userId = GetUserId() ?? 0;
+        Result<bool> result = await _service.Kick(memberId, teamId, userId);
         if (!result.Success)
             return StatusCode(result.StatusCode, result.Error);
 
